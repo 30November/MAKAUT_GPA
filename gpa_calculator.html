@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Calculator</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .row {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        #subjects-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+        .subject {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #gpa-result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="row" id="first-row">
+        <button class="branch-btn">1st Year</button>
+        <button class="branch-btn">CSE</button>
+    </div>
+
+    <div class="row" id="second-row">
+        <!-- Semester buttons will be added here -->
+    </div>
+
+    <div id="subjects-container">
+        <!-- Subjects will be added here -->
+    </div>
+
+    <div id="calculation-section" style="text-align: center; display: none;">
+        <button id="btn-calculate-gpa">Calculate GPA</button>
+        <div id="gpa-result"></div>
+    </div>
+
+
+    <script src="1st_year.js"></script>
+    <script src="cse.js"></script>
+    <script>
+        $(document).ready(function() {
+            let selectedBranch = "";
+            const subjects = {
+                "1st Year": first_year,
+                "CSE": new CSE().data
+            };
+
+            $(".branch-btn").click(function() {
+                selectedBranch = $(this).text();
+                const semesters = subjects[selectedBranch];
+                
+                $("#second-row").empty();
+                $("#subjects-container").empty();
+                $("#calculation-section").hide();
+                $("#gpa-result").empty();
+
+                for (const sem in semesters) {
+                    $("#second-row").append(`<button class="sem-btn">${sem}</button>`);
+                }
+            });
+
+            $(document).on('click', '.sem-btn', function() {
+                const sem = $(this).text();
+                $("#subjects-container").empty();
+                $("#gpa-result").empty();
+
+                const subjectList = subjects[selectedBranch][sem];
+                if (subjectList) {
+                    for (const subjectName in subjectList) {
+                        const credit = subjectList[subjectName];
+                        const subjectHTML = `
+                            <div class="subject" data-credit="${credit}">
+                                <label>${subjectName} (${credit} cr)</label>
+                                <select>
+                                    <option value="10">O</option>
+                                    <option value="9">E</option>
+                                    <option value="8">A</option>
+                                    <option value="7">B</option>
+                                    <option value="6">C</option>
+                                    <option value="5">D</option>
+                                </select>
+                            </div>
+                        `;
+                        $("#subjects-container").append(subjectHTML);
+                    }
+                    $("#calculation-section").show();
+                } else {
+                    $("#calculation-section").hide();
+                }
+            });
+
+            $("#btn-calculate-gpa").click(function() {
+                let totalCreditPoints = 0;
+                let totalCredits = 0;
+
+                $(".subject").each(function() {
+                    const credit = parseFloat($(this).data('credit'));
+                    const gradePoint = parseInt($(this).find("select").val());
+                    
+                    totalCreditPoints += gradePoint * credit;
+                    totalCredits += credit;
+                });
+
+                if (totalCredits > 0) {
+                    const gpa = totalCreditPoints / totalCredits;
+                    $("#gpa-result").text("Your GPA is: " + gpa.toFixed(2));
+                } else {
+                    $("#gpa-result").text("No subjects to calculate.");
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

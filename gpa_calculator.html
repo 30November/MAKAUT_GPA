@@ -78,8 +78,8 @@
         $(document).ready(function() {
             let selectedBranch = "";
             const subjects = {
-                "1st Year": first_year,
-                "CSE": new CSE().data
+                "1st Year": firstYear,
+                "CSE": cse
             };
 
             $(".branch-btn").click(function() {
@@ -138,12 +138,9 @@
                     totalCredits += credit;
                 });
 
-                if (totalCredits > 0) {
-                    const gpa = totalCreditPoints / totalCredits;
-                    $("#gpa-result").text("Your GPA is: " + gpa.toFixed(2));
-                } else {
-                    $("#gpa-result").text("No subjects to calculate.");
-                }
+                const gpa = totalCreditPoints / totalCredits;
+                $("#gpa-result").text("Your GPA is: " + gpa.toFixed(2));
+                
             });
         });
     </script>

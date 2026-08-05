@@ -13,6 +13,11 @@
             align-items: center;
             margin-top: 20px;
         }
+
+        select {
+            height: 1cm;
+            width: 1cm;
+        }
         .row {
             margin-bottom: 20px;
             display: flex;
@@ -55,15 +60,15 @@
 
     <div class="row" id="first-row">
         <button class="branch-btn">1st Year</button>
-        <button class="branch-btn">CSE</button>
+        <button class="branch-btn">CSE/IT</button>
     </div>
 
     <div class="row" id="second-row">
-        <!-- Semester buttons will be added here -->
+        <!-- Semester buttons -->
     </div>
 
     <div id="subjects-container">
-        <!-- Subjects will be added here -->
+        <!-- Subjects -->
     </div>
 
     <div id="calculation-section" style="text-align: center; display: none;">
@@ -79,7 +84,7 @@
             let selectedBranch = "";
             const subjects = {
                 "1st Year": firstYear,
-                "CSE": cse
+                "CSE/IT": cse
             };
 
             $(".branch-btn").click(function() {
@@ -96,6 +101,7 @@
                 }
             });
 
+            // important
             $(document).on('click', '.sem-btn', function() {
                 const sem = $(this).text();
                 $("#subjects-container").empty();
@@ -107,7 +113,7 @@
                         const credit = subjectList[subjectName];
                         const subjectHTML = `
                             <div class="subject" data-credit="${credit}">
-                                <label>${subjectName} (${credit} cr)</label>
+                                <label><strong>${subjectName} (${credit} cr)</strong></label>
                                 <select>
                                     <option value="10">O</option>
                                     <option value="9">E</option>
